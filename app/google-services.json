@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "626016687284",
+    "project_id": "onemessagechat2023bd",
+    "storage_bucket": "onemessagechat2023bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:626016687284:android:937733e30b68f5c16473e1",
+        "android_client_info": {
+          "package_name": "br.edu.scl.ifsp.ads.onemessagechat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJdl5bUA6MelRqhwszE7dzNwW5SNsthaQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
