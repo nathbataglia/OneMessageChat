@@ -138,9 +138,10 @@ class MainActivity : AppCompatActivity() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
         val position = (item.menuInfo as AdapterView.AdapterContextMenuInfo).position
 
+        val chatMessage = chatList[position]
+
         return when (item.itemId) {
             R.id.editMessageMi -> {
-                val chatMessage = chatList[position]
                 val editChatMessageIntent = Intent(this, ChatMessageActivity::class.java)
                 editChatMessageIntent.putExtra(EXTRA_MESSAGE, chatMessage)
                 carl.launch(editChatMessageIntent)
