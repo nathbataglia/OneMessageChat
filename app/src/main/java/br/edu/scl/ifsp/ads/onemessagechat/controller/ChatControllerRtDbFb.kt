@@ -15,7 +15,7 @@ class ChatControllerRtDbFb(private val mainActivity: MainActivity) {
         }.start()
     }
 
-    fun getChatMessage(id: Int) = chatDaoImpl.retrieveChatMessage(id)
+    fun getChatMessage(id_string: String) = chatDaoImpl.retrieveChatMessage(id_string)
 
     fun getChatMessages() {
         Thread{

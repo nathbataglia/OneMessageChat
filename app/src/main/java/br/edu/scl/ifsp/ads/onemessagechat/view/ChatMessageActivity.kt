@@ -39,7 +39,6 @@ class ChatMessageActivity : AppCompatActivity() {
             saveBt.setOnClickListener {
                 val message = ChatMessage(
                     // Parâmetro nomeado
-                    id = receivedMessage?.id,
                     id_string = idStringEt.text.toString(),
                     message = messageEt.text.toString()
                 )

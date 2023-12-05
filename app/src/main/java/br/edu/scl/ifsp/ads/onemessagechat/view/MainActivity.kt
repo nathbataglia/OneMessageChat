@@ -20,7 +20,6 @@ import br.edu.scl.ifsp.ads.onemessagechat.databinding.ActivityMainBinding
 import br.edu.scl.ifsp.ads.onemessagechat.model.ChatMessage
 import br.edu.scl.ifsp.ads.onemessagechat.model.Constant.EXTRA_MESSAGE
 import br.edu.scl.ifsp.ads.onemessagechat.model.Constant.MESSAGE_ARRAY
-import br.edu.scl.ifsp.ads.onemessagechat.model.Constant.VIEW_MESSAGE
 
 class MainActivity : AppCompatActivity() {
 
@@ -89,7 +88,7 @@ class MainActivity : AppCompatActivity() {
             if (result.resultCode == RESULT_OK) {
                 val chatMessage = result.data?.getParcelableExtra<ChatMessage>(EXTRA_MESSAGE)
                 chatMessage?.let { _chatMessage ->
-                    if (chatList.any { it.id == _chatMessage.id }) {
+                    if (chatList.any { it.id_string == _chatMessage.id_string }) {
                         // Edita
                         chatController.editChatMessage(_chatMessage)
                     }

@@ -24,7 +24,7 @@ class ChatDaoRtDbFb: ChatDao {
                 val chatMessage: ChatMessage? = snapshot.getValue<ChatMessage>()
 
                 chatMessage?.also { cont ->
-                    if (!chatMessageList.any { it.id == cont.id }) {
+                    if (!chatMessageList.any { it.id_string == cont.id_string }) {
                         chatMessageList.add(cont)
                     }
                 }
@@ -36,7 +36,7 @@ class ChatDaoRtDbFb: ChatDao {
 
                 chatMessage?.also { editedChatMessage ->
                     chatMessageList.apply {
-                        this[indexOfFirst { editedChatMessage.id == it.id }] = editedChatMessage
+                        this[indexOfFirst { editedChatMessage.id_string == it.id_string }] = editedChatMessage
                     }
                 }
             }
@@ -72,8 +72,8 @@ class ChatDaoRtDbFb: ChatDao {
         return 1
     }
 
-    override fun retrieveChatMessage(id: Int): ChatMessage? {
-        return chatMessageList[chatMessageList.indexOfFirst { it.id == id }]
+    override fun retrieveChatMessage(id_string: String): ChatMessage? {
+        return chatMessageList[chatMessageList.indexOfFirst { it.id_string == id_string }]
     }
 
     override fun retrieveChatMessages(): MutableList<ChatMessage> = chatMessageList
@@ -84,5 +84,5 @@ class ChatDaoRtDbFb: ChatDao {
     }
 
     private fun createOrUpdateChatMessage(chatMessage: ChatMessage) =
-        chatMessageRtDbFbReference.child(chatMessage.id.toString()).setValue(chatMessage)
+        chatMessageRtDbFbReference.child(chatMessage.id_string.toString()).setValue(chatMessage)
 }
