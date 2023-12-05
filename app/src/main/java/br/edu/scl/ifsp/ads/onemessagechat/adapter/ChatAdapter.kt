@@ -22,7 +22,7 @@ class ChatAdapter(
         val idTextView: TextView = view.findViewById(R.id.idTv)
         val messageTextView: TextView = view.findViewById(R.id.messageTv)
 
-        idTextView.text = chatMessage.id
+        idTextView.text = chatMessage.id_string
         messageTextView.text = chatMessage.message
 
         return view
