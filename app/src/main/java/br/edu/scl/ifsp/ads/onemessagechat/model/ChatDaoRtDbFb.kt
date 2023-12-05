@@ -4,17 +4,16 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.database.getValue
 
 class ChatDaoRtDbFb: ChatDao {
     companion object {
-        private const val CONTACT_LIST_ROOT_NODE = "chatList"
+        private const val CHAT_MESSAGE_LIST_ROOT_NODE = "chatList"
     }
 
-    private val chatMessageRtDbFbReference = Firebase.database.getReference(CONTACT_LIST_ROOT_NODE)
+    private val chatMessageRtDbFbReference = Firebase.database.getReference(CHAT_MESSAGE_LIST_ROOT_NODE)
 
     private val chatMessageList: MutableList<ChatMessage> = mutableListOf()
 
@@ -22,9 +21,9 @@ class ChatDaoRtDbFb: ChatDao {
         chatMessageRtDbFbReference.addChildEventListener(object : ChildEventListener {
 
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                val contact: ChatMessage? = snapshot.getValue<ChatMessage>()
+                val chatMessage: ChatMessage? = snapshot.getValue<ChatMessage>()
 
-                contact?.also { cont ->
+                chatMessage?.also { cont ->
                     if (!chatMessageList.any { it.id == cont.id }) {
                         chatMessageList.add(cont)
                     }
@@ -33,9 +32,9 @@ class ChatDaoRtDbFb: ChatDao {
 
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                val contact: ChatMessage? = snapshot.getValue<ChatMessage>()
+                val chatMessage: ChatMessage? = snapshot.getValue<ChatMessage>()
 
-                contact?.also { editedChatMessage ->
+                chatMessage?.also { editedChatMessage ->
                     chatMessageList.apply {
                         this[indexOfFirst { editedChatMessage.id == it.id }] = editedChatMessage
                     }
@@ -44,19 +43,12 @@ class ChatDaoRtDbFb: ChatDao {
 
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                val contact: ChatMessage? = snapshot.getValue<ChatMessage>()
-
-                contact?.also {
-                    chatMessageList.remove(it)
-                }
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                //NSA
             }
 
             override fun onCancelled(error: DatabaseError) {
-                //NSA
             }
         })
 
@@ -71,7 +63,6 @@ class ChatDaoRtDbFb: ChatDao {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                //NSA
             }
         })
     }

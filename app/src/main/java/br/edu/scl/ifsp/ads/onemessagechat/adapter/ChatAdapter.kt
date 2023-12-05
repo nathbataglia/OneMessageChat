@@ -1,12 +1,14 @@
 package br.edu.scl.ifsp.ads.onemessagechat.adapter
 
 import android.content.Context
+import android.content.Context.LAYOUT_INFLATER_SERVICE
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import br.edu.scl.ifsp.ads.onemessagechat.R
+import br.edu.scl.ifsp.ads.onemessagechat.databinding.TileMessageBinding
 import br.edu.scl.ifsp.ads.onemessagechat.model.ChatMessage
 
 class ChatAdapter(
@@ -16,15 +18,31 @@ class ChatAdapter(
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val chatMessage = chatList[position]
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = convertView ?: inflater.inflate(R.layout.tile_message, parent, false)
+        var tmb: TileMessageBinding? = null
 
-        val idTextView: TextView = view.findViewById(R.id.idTv)
-        val messageTextView: TextView = view.findViewById(R.id.messageTv)
+        var chatMessageTileView = convertView
+        if (chatMessageTileView == null) {
+            // então precisa inflar a célula
+            tmb = TileMessageBinding.inflate(
+                context.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater,
+                parent,
+                false
+            )
+            chatMessageTileView = tmb.root
 
-        idTextView.text = chatMessage.id_string
-        messageTextView.text = chatMessage.message
+            val tileChatMessageHolder = TileChatMessageHolder(tmb.idStringTv, tmb.messageTv)
+            chatMessageTileView.tag = tileChatMessageHolder
+        }
 
-        return view
+        (chatMessageTileView.tag as TileChatMessageHolder).idStringTv.setText(chatMessage.id_string)
+        (chatMessageTileView.tag as TileChatMessageHolder).messageTv.setText(chatMessage.message)
+
+        tmb?.idStringTv?.setText(chatMessage.id_string)
+        tmb?.messageTv?.setText(chatMessage.message)
+
+        return chatMessageTileView
     }
+
+    private data class TileChatMessageHolder(val idStringTv: TextView, val messageTv: TextView)
 }
+

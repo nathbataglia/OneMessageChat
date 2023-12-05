@@ -6,15 +6,21 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import br.edu.scl.ifsp.ads.onemessagechat.R
 import br.edu.scl.ifsp.ads.onemessagechat.adapter.ChatAdapter
 import br.edu.scl.ifsp.ads.onemessagechat.controller.ChatControllerRtDbFb
 import br.edu.scl.ifsp.ads.onemessagechat.databinding.ActivityMainBinding
 import br.edu.scl.ifsp.ads.onemessagechat.model.ChatMessage
+import br.edu.scl.ifsp.ads.onemessagechat.model.Constant.EXTRA_MESSAGE
 import br.edu.scl.ifsp.ads.onemessagechat.model.Constant.MESSAGE_ARRAY
+import br.edu.scl.ifsp.ads.onemessagechat.model.Constant.VIEW_MESSAGE
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
     // Data source
     private val chatList: MutableList<ChatMessage> = mutableListOf()
+    private val originalChatList: MutableList<ChatMessage> = mutableListOf()
 
     // Controller
     private val chatController: ChatControllerRtDbFb by lazy {
@@ -52,9 +59,9 @@ class MainActivity : AppCompatActivity() {
                 chatController.getChatMessages()
                 sendMessageDelayed(obtainMessage().apply { what = GET_CHAT_MESSAGES_MSG }, GET_CHAT_MESSAGES_INTERVAL)
             } else{
-                msg.data.getParcelableArray(MESSAGE_ARRAY)?.also { contactArray ->
+                msg.data.getParcelableArray(MESSAGE_ARRAY)?.also { messageArray ->
                     chatList.clear()
-                    contactArray.forEach {
+                    messageArray.forEach {
                         chatList.add(it as ChatMessage)
                     }
                     chatAdapter.notifyDataSetChanged()
@@ -72,9 +79,37 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(amb.toolbarIn.toolbar)
 
-        amb.chatLv.adapter = chatAdapter
+        amb.chatsLv.adapter = chatAdapter
 
-        //chatController.getChats()
+        originalChatList.addAll(chatList)
+
+        carl = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val chatMessage = result.data?.getParcelableExtra<ChatMessage>(EXTRA_MESSAGE)
+                chatMessage?.let { _chatMessage ->
+                    if (chatList.any { it.id == _chatMessage.id }) {
+                        // Edita
+                        chatController.editChatMessage(_chatMessage)
+                    }
+                    else {
+                        // Adiciona
+                        chatController.insertChatMessage(_chatMessage)
+                    }
+                }
+            }
+        }
+
+        registerForContextMenu(amb.chatsLv)
+        updateChatListHandler.apply {
+            sendMessageDelayed(
+                obtainMessage().apply { what = GET_CHAT_MESSAGES_MSG },
+                GET_CHAT_MESSAGES_INTERVAL
+            )
+        }
+
+        chatController.getChatMessages()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -92,6 +127,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        menuInflater.inflate(R.menu.context_menu_main, menu)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val position = (item.menuInfo as AdapterView.AdapterContextMenuInfo).position
+
+        return when (item.itemId) {
+            R.id.editMessageMi -> {
+                val chatMessage = chatList[position]
+                val editChatMessageIntent = Intent(this, ChatMessageActivity::class.java)
+                editChatMessageIntent.putExtra(EXTRA_MESSAGE, chatMessage)
+                carl.launch(editChatMessageIntent)
+                true
+            }
+            else -> { false }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterForContextMenu(amb.chatsLv)
+    }
 
     fun updateChatList(_chatList: MutableList<ChatMessage>) {
         chatList.clear()

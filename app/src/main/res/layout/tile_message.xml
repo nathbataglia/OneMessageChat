@@ -6,16 +6,18 @@
     android:padding="10dp">
 
     <TextView
-        android:id="@+id/idTv"
+        android:id="@+id/idStringTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Id"
-        android:textSize="25sp" />
+        android:text="Id Chat"
+        android:textSize="25sp"
+        />
 
     <TextView
         android:id="@+id/messageTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mensagem inicial de exemplo" />
+        android:text="Mensagem inicial de exemplo"
+        />
 
 </LinearLayout>
