@@ -5,4 +5,8 @@
         android:icon="@drawable/ic_add"
         android:title="@string/add_message"
         app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/exitAppMi"
+        android:title="@string/exit_app"
+        app:showAsAction="never"/>
 </menu>

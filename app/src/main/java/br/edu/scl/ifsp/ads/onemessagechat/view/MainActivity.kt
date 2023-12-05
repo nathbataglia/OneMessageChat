@@ -122,6 +122,10 @@ class MainActivity : AppCompatActivity() {
                 carl.launch(Intent(this, ChatMessageActivity::class.java))
                 true
             }
+            R.id.exitAppMi -> {
+                finish() // Fecha a atividade atual, saindo do app
+                true
+            }
             else -> false
         }
     }
